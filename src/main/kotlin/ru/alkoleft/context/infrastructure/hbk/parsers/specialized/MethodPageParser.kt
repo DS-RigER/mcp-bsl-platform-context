@@ -66,19 +66,19 @@ class MethodPageProxyHandler : PageProxyHandler<MethodInfo>() {
         get() = signatures.last()
 
     override fun createHandler(blockTitle: String): BlockHandler<*>? =
-        if (blockTitle.startsWith("Вариант синтаксиса:")) {
+        if (blockTitle.startsWith("Syntax variant:")) {
             null
         } else {
             when (blockTitle) {
-                "Синтаксис:", "Вариант синтаксиса:" -> SyntaxBlockHandler()
-                "Параметры:" -> ParametersBlockHandler()
-                "Возвращаемое значение:" -> ValueInfoBlockHandler()
-                "Описание:" -> DescriptionBlockHandler()
-                "Описание варианта метода:" -> SignatureDescriptionBlockHandler()
-                "Пример:" -> ExampleBlockHandler() // Placeholder, can be a specific handler
-                "См. также:" -> RelatedObjectsBlockHandler() // Placeholder, can be a specific handler
-                "Примечание:" -> NoteBlockHandler()
-                "Доступность:", "Использование в версии:" -> null
+                "Syntax:", "Syntax variant:" -> SyntaxBlockHandler()
+                "Parameters:" -> ParametersBlockHandler()
+                "Returned value:" -> ValueInfoBlockHandler()
+                "Description:" -> DescriptionBlockHandler()
+                "Description of method variant:" -> SignatureDescriptionBlockHandler()
+                "Example:" -> ExampleBlockHandler() // Placeholder, can be a specific handler
+                "See also:" -> RelatedObjectsBlockHandler() // Placeholder, can be a specific handler
+                "Note:" -> NoteBlockHandler()
+                "Availability:", "Available since:" -> null
                 else -> throw UnknownPageBlockType(blockTitle)
             }
         }
@@ -87,8 +87,8 @@ class MethodPageProxyHandler : PageProxyHandler<MethodInfo>() {
         text: String,
         handler: BlockHandler<*>?,
     ) {
-        if (text.startsWith("Вариант синтаксиса:")) {
-            appendNewSignature(text.substring(19).trim())
+        if (text.startsWith("Syntax variant:")) {
+            appendNewSignature(text.substring(15).trim())
         }
     }
 
@@ -102,7 +102,7 @@ class MethodPageProxyHandler : PageProxyHandler<MethodInfo>() {
 
             is SyntaxBlockHandler -> {
                 if (signatures.isEmpty()) {
-                    appendNewSignature("Основная")
+                    appendNewSignature("Default")
                 }
                 currentSignature.syntax = handler.getResult()
             }

@@ -80,9 +80,9 @@ class PagesVisitor(
 
         for (subPage in page.children) {
             when (subPage.title.en) {
-                "Свойства" -> properties = visitPropertiesPage(subPage)
-                "Методы" -> methods = visitMethodsPage(subPage)
-                "Конструкторы" -> constructors = getConstructorsFromPage(subPage)
+                "Properties" -> properties = visitPropertiesPage(subPage)
+                "Methods" -> methods = visitMethodsPage(subPage)
+                "Constructors" -> constructors = getConstructorsFromPage(subPage)
             }
         }
         return objectInfo.copy(
@@ -96,7 +96,7 @@ class PagesVisitor(
         page.children
             .asSequence()
             .filter { it.htmlPath.contains("/properties/") } // TODO проверить на обязательность
-            .filter { !it.title.ru.startsWith("<") }
+            .filter { !it.title.en.startsWith("<") }
             .map { parser.parsePropertyPage(it) }
 
     fun visitMethodsPage(page: Page) =
@@ -122,7 +122,7 @@ private fun isGlobalContextPage(page: Page): Boolean = page.htmlPath.contains("G
 
 private fun isCatalogPage(page: Page) = CATALOG_PAGE_PATTERN.find(page.htmlPath) != null
 
-private fun isEnumCatalog(page: Page) = page.title.en == "Системные наборы значений" || page.title.en == "Системные перечисления"
+private fun isEnumCatalog(page: Page) = page.title.en == "System value sets" || page.title.en == "System enumerations"
 
 suspend fun SequenceScope<Page>.drillDown(base: Page) {
     base.children.forEach { child ->

@@ -40,12 +40,13 @@ class BlockHandlerTest {
     @Test
     fun `test NameBlockHandler parses name without English translation`() {
         nameHandler.onOpenTag("p", mapOf("class" to "V8SH_title"), false)
-        nameHandler.onText("Массив")
+        nameHandler.onText("Array")
         nameHandler.onCloseTag("p", false)
 
         val result = nameHandler.getResult()
-        assertEquals("Массив", result.first)
-        assertEquals("", result.second)
+        // For English doc without parentheses, both names are same
+        assertEquals("Array", result.first)
+        assertEquals("Array", result.second)
     }
 
     @Test
@@ -57,9 +58,10 @@ class BlockHandlerTest {
 
     @Test
     fun `test NameBlockHandler readName method without parentheses`() {
-        val result = nameHandler.readName("Массив")
-        assertEquals("Массив", result.first)
-        assertEquals("", result.second)
+        val result = nameHandler.readName("Array")
+        // For English doc without parentheses, both names are same
+        assertEquals("Array", result.first)
+        assertEquals("Array", result.second)
     }
 
     @Test
@@ -82,51 +84,51 @@ class BlockHandlerTest {
 
     @Test
     fun `test ParametersBlockHandler parses single parameter`() {
-        // Имитируем HTML структуру параметра
+        // Simulate HTML structure of a parameter (English documentation)
         parametersHandler.onOpenTag("div", mapOf("class" to "V8SH_rubric"), false)
-        parametersHandler.onText("<Количество> (необязательный)")
+        parametersHandler.onText("<Count> (optional)")
         parametersHandler.onCloseTag("div", false)
 
-        parametersHandler.onText("Тип: ")
+        parametersHandler.onText("Type: ")
 
         parametersHandler.onOpenTag("a", mapOf("href" to "index.html"), false)
-        parametersHandler.onText("Произвольный")
+        parametersHandler.onText("Arbitrary")
         parametersHandler.onCloseTag("a", false)
         parametersHandler.onText(".")
 
         parametersHandler.onOpenTag("br", emptyMap(), true)
-        parametersHandler.onText("Описание параметра")
+        parametersHandler.onText("Parameter description")
 
         val result = parametersHandler.getResult()
         assertEquals(1, result.size)
 
         val parameter = result[0]
-        assertEquals("Количество", parameter.name)
-        assertEquals("Произвольный", parameter.type)
+        assertEquals("Count", parameter.name)
+        assertEquals("Arbitrary", parameter.type)
         assertTrue(parameter.isOptional)
-        assertEquals("Описание параметра", parameter.description)
+        assertEquals("Parameter description", parameter.description)
     }
 
     @Test
     fun `test ParametersBlockHandler parses parameter without linked type`() {
-        // Имитируем HTML структуру параметра
+        // Simulate HTML structure of a parameter (English documentation)
         parametersHandler.onOpenTag("div", mapOf("class" to "V8SH_rubric"), false)
-        parametersHandler.onText("<Количество> (необязательный)")
+        parametersHandler.onText("<Count> (optional)")
         parametersHandler.onCloseTag("div", false)
 
-        parametersHandler.onText("Тип: Произвольный.")
+        parametersHandler.onText("Type: Arbitrary.")
 
         parametersHandler.onOpenTag("br", emptyMap(), true)
-        parametersHandler.onText("Описание параметра")
+        parametersHandler.onText("Parameter description")
 
         val result = parametersHandler.getResult()
         assertEquals(1, result.size)
 
         val parameter = result[0]
-        assertEquals("Количество", parameter.name)
-        assertEquals("Произвольный", parameter.type)
+        assertEquals("Count", parameter.name)
+        assertEquals("Arbitrary", parameter.type)
         assertTrue(parameter.isOptional)
-        assertEquals("Описание параметра", parameter.description)
+        assertEquals("Parameter description", parameter.description)
     }
 
     @Test

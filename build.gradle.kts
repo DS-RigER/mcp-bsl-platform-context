@@ -89,7 +89,7 @@ tasks.test {
     useJUnitPlatform()
 
     testLogging {
-        events("passed", "skipped", "failed", "standard_error")
+        events("passed", "skipped", "failed", "standard_error", "standard_out")
     }
 }
 

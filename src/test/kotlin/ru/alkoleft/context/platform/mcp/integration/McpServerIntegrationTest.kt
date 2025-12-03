@@ -44,7 +44,7 @@ class McpServerIntegrationTest {
     @DisplayName("Поиск должен возвращать корректную структуру ответа")
     fun testSearchResponseStructure() {
         // Arrange
-        val query = "СтрНайти"
+        val query = "StrFind"
 
         // Act
         val result = mcpController.search(query)
@@ -52,7 +52,7 @@ class McpServerIntegrationTest {
         // Assert
         assert(result.isNotEmpty()) { "Поиск должен возвращать результаты" }
         assert(!result.contains("❌ **Не найдено:** Ничего не найдено")) { "Поиск не должен возвращать ошибку для корректного запроса" }
-        assert(result.contains("СтрНайти") || result.contains("Поиск")) { "Результат должен содержать информацию о поиске" }
+        assert(result.contains("StrFind") || result.contains("Search")) { "Результат должен содержать информацию о поиске" }
 
         logger.info { "✅ Структура ответа поиска корректна" }
     }
@@ -80,7 +80,7 @@ class McpServerIntegrationTest {
     fun testSearchWithLimit() {
         // Arrange
         val limit = 2
-        val query = "Стр"
+        val query = "Str"
 
         // Act
         val result = mcpController.search(query, limit = limit)
@@ -96,7 +96,7 @@ class McpServerIntegrationTest {
     @DisplayName("Поиск должен поддерживать фильтрацию по типу")
     fun testSearchByType() {
         // Arrange
-        val query = "СтрНайти"
+        val query = "StrFind"
         val type = "method"
 
         // Act
@@ -113,7 +113,7 @@ class McpServerIntegrationTest {
     @DisplayName("Инструмент info должен возвращать детальную информацию")
     fun testInfoTool() {
         // Arrange
-        val elementName = "СтрНайти"
+        val elementName = "StrFind"
 
         // Act
         val result = mcpController.getInfo(elementName, "method")
@@ -121,7 +121,7 @@ class McpServerIntegrationTest {
         // Assert
         assert(result.isNotEmpty()) { "Инструмент info должен возвращать результат" }
         assert(!result.contains("❌")) { "Инструмент info не должен возвращать ошибку для корректного запроса" }
-        assert(result.contains(elementName) || result.contains("не найден")) { "Результат должен содержать информацию об элементе" }
+        assert(result.contains(elementName) || result.contains("not found")) { "Результат должен содержать информацию об элементе" }
 
         logger.info { "✅ Инструмент info работает корректно для '$elementName'" }
     }
@@ -130,8 +130,8 @@ class McpServerIntegrationTest {
     @DisplayName("Инструмент getMember должен возвращать информацию о члене типа")
     fun testGetMemberTool() {
         // Arrange
-        val typeName = "ТаблицаЗначений"
-        val memberName = "Колонки"
+        val typeName = "ValueTable"
+        val memberName = "Columns"
 
         // Act
         val result = mcpController.getMember(typeName, memberName)
@@ -147,7 +147,7 @@ class McpServerIntegrationTest {
     @DisplayName("Инструмент getMembers должен возвращать список всех членов типа")
     fun testGetMembersTool() {
         // Arrange
-        val typeName = "ТаблицаЗначений"
+        val typeName = "ValueTable"
 
         // Act
         val result = mcpController.getMembers(typeName)
@@ -163,7 +163,7 @@ class McpServerIntegrationTest {
     @DisplayName("Инструмент getConstructors должен возвращать список конструкторов")
     fun testGetConstructorsTool() {
         // Arrange
-        val typeName = "ТаблицаЗначений"
+        val typeName = "ValueTable"
 
         // Act
         val result = mcpController.getConstructors(typeName)
@@ -205,7 +205,7 @@ class McpServerIntegrationTest {
     @DisplayName("MCP сервер должен поддерживать параллельные запросы")
     fun testConcurrentRequests() {
         // Arrange
-        val queries = listOf("Стр", "Справочник", "Код", "Найти")
+        val queries = listOf("Str", "Value", "Array", "Find")
 
         // Act
         val results = queries.map { mcpController.search(it) }
