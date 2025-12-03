@@ -89,13 +89,13 @@ class MethodPageParserTest {
 
         assertEquals("GetCommonTemplate", result.nameRu)
         assertEquals("GetCommonTemplate", result.nameEn)
-        
+
         // Check that there is at least one signature
         assertTrue(result.signatures.isNotEmpty())
 
         val signature = result.signatures[0]
         assertEquals("GetCommonTemplate(<CommonTemplate>)", signature.syntax)
-        
+
         // Check parameters
         assertEquals(1, signature.parameters.size)
         assertEquals("CommonTemplate", signature.parameters[0].name)

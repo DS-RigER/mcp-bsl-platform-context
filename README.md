@@ -4,6 +4,8 @@
 
 ## Обзор
 
+# РАБОТАЕТ ТОЛЬКО С АНГЛИЙСКОЙ ДОКУМЕНТАЦИЕЙ!
+
 Приложение `mcp-bsl-context` предназначено исключительно для интеграции с AI-ассистентами, чтобы они могли выполнять поиск по справке платформы 1С:Предприятие и получать детальную информацию о встроенных функциях, типах, методах и свойствах (аналогично работе с "Синтаксис-помощником" или официальной документацией 1С).
 
 ### 🤖 Возможности MCP сервера
@@ -12,6 +14,8 @@
 - **Детальная справка** — получение подробной информации о функциях, методах, свойствах и типах, включая сигнатуры и описания
 - **Навигация по объектной модели** — просмотр методов и свойств конкретных типов данных
 - **Информация о конструкторах** — способы создания объектов платформы 1С
+- **BSL Coding Guidelines** — руководство по написанию кода на языке 1С
+- **Strict Typing Documentation** — документация по строгой типизации кода
 - **Интеграция с AI** — стандартизированный протокол MCP для взаимодействия с AI-ассистентами
 - **Два режима работы** — STDIO для локальной разработки и SSE для сетевого доступа
 
@@ -74,6 +78,27 @@ Windows
 java -Dfile.encoding=UTF-8 -jar mcp-bsl-context-<версия>.jar [опции]
 ```
 
+```json
+{
+	"servers": {
+		"1c-platform": {
+			"type": "stdio",
+			"command": "java",
+			"args": [
+			"-Dfile.encoding=UTF-8",
+			"-Ddocs.guideline.path=C:\\mcp-bsl-platform-context\\src\\main\\resources\\docinfo\\guideline.md",
+			"-Ddocs.strict-types.path=C:\\mcp-bsl-platform-context\\src\\main\\resources\\docinfo\\strict-types.md",
+			"-jar",
+			"C:\\mcp-bsl-platform-context\\build\\libs\\mcp-bsl-context-only_en-4cba552-DIRTY.jar",
+			"--platform-path",
+			"C:\\Program Files\\1cv8\\8.3.22.2557"
+			]
+		}
+	},
+	"inputs": []
+}
+```
+
 **Опции:**
 
 - `--platform-path`, `-p` - путь к каталогу установки 1С Предприятия
@@ -117,6 +142,27 @@ java -Dfile.encoding=UTF-8 -jar mcp-bsl-context-0.3.0.jar --platform-path "C:\Pr
 - **getMember** - получение информации о методе или свойстве конкретного типа
 - **getMembers** - получение полного списка всех методов и свойств для указанного типа
 - **getConstructors** - получение списка конструкторов для указанного типа
+- **getCodingGuideline** - получение BSL Coding Guidelines (руководство по написанию кода)
+- **getStrictTypingInfo** - получение информации по строгой типизации по топикам
+- **searchStrictTyping** - поиск по документации строгой типизации
+
+### Внешние файлы документации
+
+Файлы `guideline.md` и `strict-types.md` можно указать через параметры JVM для кастомизации без пересборки JAR:
+
+```bash
+java -Ddocs.guideline.path=/path/to/guideline.md \
+     -Ddocs.strict-types.path=/path/to/strict-types.md \
+     -jar mcp-bsl-context.jar --platform-path "/opt/1cv8"
+```
+
+Или через переменные окружения:
+```bash
+export DOCS_GUIDELINE_PATH=/path/to/guideline.md
+export DOCS_STRICT_TYPES_PATH=/path/to/strict-types.md
+```
+
+Если пути не указаны, используются встроенные ресурсы из JAR.
 
 Подробная документация по использованию MCP сервера доступна в [MCP_SERVER_USAGE.md](documentation/README.md).
 
@@ -150,6 +196,8 @@ java -Dfile.encoding=UTF-8 -jar mcp-bsl-context-0.3.0.jar --platform-path "C:\Pr
       "command": "java",
       "args": [
         "-Dfile.encoding=UTF-8",
+        "-Ddocs.guideline.path=C:\\path\\to\\guideline.md",
+        "-Ddocs.strict-types.path=C:\\path\\to\\strict-types.md",
         "-jar",
         "C:\\your_path\\mcp-bsl-context-0.3.0.jar",
         "--platform-path",
@@ -187,6 +235,8 @@ java -Dfile.encoding=UTF-8 -jar mcp-bsl-context-0.3.0.jar --platform-path "C:\Pr
       "command": "java",
       "args": [
         "-Dfile.encoding=UTF-8",
+        "-Ddocs.guideline.path=C:\\path\\to\\guideline.md",
+        "-Ddocs.strict-types.path=C:\\path\\to\\strict-types.md",
         "-jar",
         "C:\\your_path\\mcp-bsl-context-0.3.0.jar",
         "--platform-path",

@@ -8,9 +8,13 @@
 package ru.alkoleft.context.infrastructure.persistent.storage
 
 import ru.alkoleft.context.business.entities.MethodDefinition
+import ru.alkoleft.context.business.entities.ParameterDefinition
 import ru.alkoleft.context.business.entities.PlatformTypeDefinition
 import ru.alkoleft.context.business.entities.PropertyDefinition
+import ru.alkoleft.context.business.entities.Signature
+import ru.alkoleft.context.infrastructure.hbk.models.ConstructorInfo
 import ru.alkoleft.context.infrastructure.hbk.models.MethodInfo
+import ru.alkoleft.context.infrastructure.hbk.models.MethodParameterInfo
 import ru.alkoleft.context.infrastructure.hbk.models.ObjectInfo
 import ru.alkoleft.context.infrastructure.hbk.models.PropertyInfo
 
@@ -30,11 +34,26 @@ fun PropertyInfo.toEntity() =
         isReadOnly = readonly,
     )
 
+fun MethodParameterInfo.toEntity() =
+    ParameterDefinition(
+        name = name,
+        type = type,
+        description = description,
+        required = !isOptional,
+    )
+
+fun ConstructorInfo.toEntity() =
+    Signature(
+        name = name,
+        parameters = parameters.map(MethodParameterInfo::toEntity),
+        description = description,
+    )
+
 fun ObjectInfo.toEntity() =
     PlatformTypeDefinition(
         name = nameRu,
         description = description,
         methods = methods?.map(MethodInfo::toEntity) ?: emptyList(),
         properties = properties?.map(PropertyInfo::toEntity) ?: emptyList(),
-        constructors = emptyList(),
+        constructors = constructors?.map(ConstructorInfo::toEntity) ?: emptyList(),
     )

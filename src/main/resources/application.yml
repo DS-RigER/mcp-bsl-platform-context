@@ -35,6 +35,19 @@ platform:
     # Можно переопределить через переменную окружения PLATFORM_CONTEXT_PATH
     path: ${PLATFORM_CONTEXT_PATH:}
 
+# Настройки документации
+# Внешние пути к файлам документации (можно менять без пересборки JAR)
+# Если не указаны - используются встроенные ресурсы из JAR
+docs:
+  guideline:
+    # Путь к файлу guideline.md
+    # Пример: /path/to/guideline.md или C:\docs\guideline.md
+    path: ${DOCS_GUIDELINE_PATH:}
+  strict-types:
+    # Путь к файлу strict-types.md
+    # Пример: /path/to/strict-types.md или C:\docs\strict-types.md
+    path: ${DOCS_STRICT_TYPES_PATH:}
+
 # Настройки логирования
 logging:
   config: classpath:logback-mcp.xml

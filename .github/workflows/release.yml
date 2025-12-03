@@ -74,11 +74,23 @@ jobs:
           echo "VERSION=${TAG}" >> $GITHUB_OUTPUT
           echo "VERSION_NUMBER=${TAG#v}" >> $GITHUB_OUTPUT
 
+      - name: Prepare documentation files
+        run: |
+          mkdir -p release-docs
+          cp src/main/resources/docinfo/guideline.md release-docs/
+          cp src/main/resources/docinfo/strict-types.md release-docs/
+
       - name: Upload JAR artifact
         uses: actions/upload-artifact@v4
         with:
           name: mcp-bsl-context-jar
           path: ./build/libs/mcp-bsl-context-${{ steps.tag_version.outputs.VERSION_NUMBER }}.jar
+
+      - name: Upload documentation artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: mcp-bsl-context-docs
+          path: ./release-docs/
           
       - name: Create GitHub Release
         id: create_release
@@ -92,10 +104,24 @@ jobs:
             ### 🔄 Changes
             - Automatic release from tag ${{ steps.tag_version.outputs.VERSION }}
             
+            ### 📦 Files
+            - **mcp-bsl-context-*.jar** - Main server JAR
+            - **guideline.md** - BSL coding guidelines (can be customized)
+            - **strict-types.md** - Strict typing documentation (can be customized)
+            
+            ### ⚙️ Configuration
+            To use external documentation files, set environment variables:
+            ```
+            DOCS_GUIDELINE_PATH=/path/to/guideline.md
+            DOCS_STRICT_TYPES_PATH=/path/to/strict-types.md
+            ```
+            
           draft: true
           prerelease: false
           files: |
             ./build/libs/mcp-bsl-context-${{ steps.tag_version.outputs.VERSION_NUMBER }}.jar
+            ./release-docs/guideline.md
+            ./release-docs/strict-types.md
 
   docker-build:
     runs-on: ubuntu-latest
