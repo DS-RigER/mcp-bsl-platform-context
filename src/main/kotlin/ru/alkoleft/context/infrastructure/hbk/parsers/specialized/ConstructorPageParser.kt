@@ -52,13 +52,13 @@ class ConstructorPageProxyHandler : PageProxyHandler<ConstructorInfo>() {
 
     override fun createHandler(blockTitle: String): BlockHandler<*>? =
         when (blockTitle) {
-            "Синтаксис:" -> SyntaxBlockHandler()
-            "Параметры:" -> ParametersBlockHandler()
-            "Описание:" -> DescriptionBlockHandler()
-            "Пример:" -> ExampleBlockHandler()
-            "См. также:" -> RelatedObjectsBlockHandler()
-            "Примечание:" -> NoteBlockHandler()
-            "Доступность:", "Использование в версии:" -> null
+            "Syntax:" -> SyntaxBlockHandler()
+            "Parameters:" -> ParametersBlockHandler()
+            "Description:" -> DescriptionBlockHandler()
+            "Example:" -> ExampleBlockHandler()
+            "See also:" -> RelatedObjectsBlockHandler()
+            "Note:" -> NoteBlockHandler()
+            "Availability:", "Available since:" -> null
             else -> throw UnknownPageBlockType(blockTitle)
         }
 

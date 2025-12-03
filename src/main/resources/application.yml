@@ -31,7 +31,7 @@ spring:
 # Настройки платформы 1С
 platform:
   context:
-    # Путь к каталогу с файлами платформы (содержащий shcntx_ru.hbk)
+    # Путь к каталогу с файлами платформы (содержащий shcntx_root.hbk)
     # Можно переопределить через переменную окружения PLATFORM_CONTEXT_PATH
     path: ${PLATFORM_CONTEXT_PATH:}
 

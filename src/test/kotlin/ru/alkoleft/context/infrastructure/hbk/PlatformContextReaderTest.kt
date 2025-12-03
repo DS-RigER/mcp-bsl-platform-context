@@ -15,7 +15,7 @@ class PlatformContextReaderTest {
     fun read() {
         val platformPath = System.getProperty("platform.context.path")
         val reader = PlatformContextReader()
-        reader.read(Path(platformPath, "shcntx_ru.hbk")) {
+        reader.read(Path(platformPath, "shcntx_root.hbk")) {
             println("Types: ${types().count()}")
             println("Enums: ${enums().count()}")
             println("Global methods: ${globalMethods().count()}")
