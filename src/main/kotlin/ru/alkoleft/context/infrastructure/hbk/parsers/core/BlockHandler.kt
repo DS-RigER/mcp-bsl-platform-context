@@ -119,7 +119,9 @@ class NameBlockHandler : BlockHandler<Pair<String, String>> {
         return if (match != null) {
             Pair(match.groupValues[1].trim(), match.groupValues[2].trim())
         } else {
-            Pair(text.toString(), "")
+            // For English documentation, both names are the same (only English name is present)
+            val name = text.toString()
+            Pair(name, name)
         }
     }
 }
@@ -192,7 +194,7 @@ class ParametersBlockHandler : MarkdownHtmlHandler<List<MethodParameterInfo>>() 
             BlockType.NAME -> {
                 PARAMETER_NAME_PATTERN.find(currentParameterNameBufer.toString())?.let {
                     currentParameterName = it.groupValues[1]
-                    currentParameterOptional = it.groupValues.getOrNull(2) == "необязательный"
+                    currentParameterOptional = it.groupValues.getOrNull(2) == "optional"
                 }
                 blockType = BlockType.NONE
             }
@@ -210,10 +212,10 @@ class ParametersBlockHandler : MarkdownHtmlHandler<List<MethodParameterInfo>>() 
                     blockType = BlockType.TYPE
                 } else if (isTextTypeBlock(trimmed)) {
                     if (trimmed.endsWith(".")) {
-                        currentParameterType.append(trimmed.substring(4, trimmed.length - 1).trim())
+                        currentParameterType.append(trimmed.substring(5, trimmed.length - 1).trim())
                         blockType = BlockType.DESCRIPTION
                     } else {
-                        currentParameterType.append(trimmed.substring(4).trim())
+                        currentParameterType.append(trimmed.substring(5).trim())
                         blockType = BlockType.TYPE
                     }
                 }
@@ -330,10 +332,10 @@ class ValueInfoBlockHandler : MarkdownHtmlHandler<ValueInfo?>() {
                     blockType = BlockType.TYPE
                 } else if (isTextTypeBlock(trimmed)) {
                     if (trimmed.endsWith(".")) {
-                        currentValueType.append(trimmed.substring(4, trimmed.length - 1).trim())
+                        currentValueType.append(trimmed.substring(5, trimmed.length - 1).trim())
                         blockType = BlockType.DESCRIPTION
                     } else {
-                        currentValueType.append(trimmed.substring(4).trim())
+                        currentValueType.append(trimmed.substring(5).trim())
                         blockType = BlockType.TYPE
                     }
                 }
@@ -503,7 +505,7 @@ class RelatedObjectsBlockHandler : BaseBlockHandler<List<RelatedObject>>() {
  * Обработчик блока флага "только чтение".
  *
  * Определяет, является ли сущность доступной только для чтения,
- * анализируя текстовый контент на наличие фразы "Только чтение".
+ * анализируя текстовый контент на наличие фразы "Read only".
  *
  * @return true, если сущность доступна только для чтения, false в противном случае
  */
@@ -511,7 +513,7 @@ class ReadOnlyBlockHandler : BaseBlockHandler<Boolean>() {
     private var value = false
 
     override fun onText(text: String) {
-        value = text.startsWith("Только чтение")
+        value = text.startsWith("Read only")
     }
 
     override fun getResult() = value
@@ -521,6 +523,6 @@ class ReadOnlyBlockHandler : BaseBlockHandler<Boolean>() {
     }
 }
 
-fun isTextTypeBlock(text: String) = text != "Тип:" && text.startsWith("Тип:")
+fun isTextTypeBlock(text: String) = text != "Type:" && text.startsWith("Type:")
 
-fun isTypeBlock(text: String) = text == "Тип:"
+fun isTypeBlock(text: String) = text == "Type:"

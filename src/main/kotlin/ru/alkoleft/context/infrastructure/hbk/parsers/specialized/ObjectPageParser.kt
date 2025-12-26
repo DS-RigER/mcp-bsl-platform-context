@@ -64,11 +64,11 @@ class ObjectPageProxyHandler : PageProxyHandler<ObjectInfo>() {
 
     override fun createHandler(blockTitle: String): BlockHandler<*>? =
         when (blockTitle) {
-            "Описание:" -> DescriptionBlockHandler()
-            "Пример:" -> ExampleBlockHandler()
-            "См. также:" -> RelatedObjectsBlockHandler()
-            "Примечание:" -> NoteBlockHandler()
-            "Свойства:", "Методы:", "События:", "Конструкторы:", "Доступность:", "Использование в версии:" -> null // Игнорируем эти блоки
+            "Description:" -> DescriptionBlockHandler()
+            "Example:" -> ExampleBlockHandler()
+            "See also:" -> RelatedObjectsBlockHandler()
+            "Note:" -> NoteBlockHandler()
+            "Properties:", "Methods:", "Events:", "Constructors:", "Availability:", "Available since:" -> null // Игнорируем эти блоки
             else -> null // Игнорируем неизвестные блоки
         }
 

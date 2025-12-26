@@ -12,6 +12,7 @@ import org.springframework.ai.tool.annotation.Tool
 import org.springframework.ai.tool.annotation.ToolParam
 import org.springframework.stereotype.Service
 import ru.alkoleft.context.business.services.ContextSearchService
+import ru.alkoleft.context.business.services.DocsInfoService
 import ru.alkoleft.context.business.services.ResponseFormatterService
 
 private val logger = KotlinLogging.logger {}
@@ -25,6 +26,7 @@ private val logger = KotlinLogging.logger {}
 class PlatformContextMcpController(
     private val searchService: ContextSearchService,
     private val formatter: ResponseFormatterService,
+    private val docsInfoService: DocsInfoService,
 ) {
     /**
      * Поиск по API платформы 1С Предприятие
@@ -170,5 +172,76 @@ class PlatformContextMcpController(
             logger.error(e) { "Ошибка при получении информации об элементе типа" }
             return formatter.formatError(e)
         }
+    }
+
+    /**
+     * Get BSL coding guidelines
+     */
+    @Tool(
+        name = "getCodingGuideline",
+        description = "Get BSL coding guidelines for 1C:Enterprise development. Returns best practices and coding standards.",
+    )
+    fun getCodingGuideline(): String {
+        logger.debug { "getCodingGuideline called" }
+        return docsInfoService.getGuideline()
+    }
+
+    /**
+     * Get strict typing information by topic
+     */
+    @Tool(
+        name = "getStrictTypingInfo",
+        description =
+            "Get strict typing information for BSL code in 1C:Enterprise. " +
+                "Use this to learn how to properly type variables, parameters, structures, arrays, value tables, etc.",
+    )
+    fun getStrictTypingInfo(
+        @ToolParam(
+            description =
+                "Topic name. Available topics: " +
+                    "'overview' - purpose and how strict typing works, " +
+                    "'enabling' - how to enable strict typing, " +
+                    "'local-variables' - local variable initialization, " +
+                    "'module-variables' - module variable initialization, " +
+                    "'structure-keys' - structure key initialization, " +
+                    "'arrays' - array description, " +
+                    "'value-table' - value table description, " +
+                    "'table-row' - table row description, " +
+                    "'map' - map description, " +
+                    "'constructor-functions' - constructor functions, " +
+                    "'type-links' - references to types, " +
+                    "'forms' - form-related typing, " +
+                    "'query-results' - query result typing, " +
+                    "'documentation-syntax' - documentation comment syntax, " +
+                    "'diagnostics' - how to diagnose untyped code. " +
+                    "Use 'topics' to get full list of available topics.",
+        )
+        topic: String,
+    ): String {
+        logger.debug { "getStrictTypingInfo called with topic='$topic'" }
+        return if (topic.lowercase() == "topics") {
+            docsInfoService.getAvailableTopics()
+        } else {
+            docsInfoService.getStrictTypingInfo(topic)
+        }
+    }
+
+    /**
+     * Search strict typing documentation
+     */
+    @Tool(
+        name = "searchStrictTyping",
+        description =
+            "Search strict typing documentation for BSL code. " +
+                "Use keywords to find relevant information about typing structures, arrays, value tables, parameters, etc.",
+    )
+    fun searchStrictTyping(
+        @ToolParam(
+            description = "Search query. Examples: 'ValueTable', 'constructor', 'Structure', 'Array', 'parameter type'",
+        )
+        query: String,
+    ): String {
+        logger.debug { "searchStrictTyping called with query='$query'" }
+        return docsInfoService.searchStrictTyping(query)
     }
 }

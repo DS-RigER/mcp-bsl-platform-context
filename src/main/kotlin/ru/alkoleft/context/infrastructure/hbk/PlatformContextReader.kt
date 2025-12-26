@@ -92,7 +92,7 @@ class PlatformContextReader {
 
         fun globalProperties() =
             globalContextPage.children
-                .first { it.title.en == "Свойства" }
+                .first { it.title.en == "Properties" }
                 .let(visitor::visitPropertiesPage)
     }
 }

@@ -54,11 +54,11 @@ class PropertyPageProxyHandler : PageProxyHandler<PropertyInfo>() {
 
     override fun createHandler(blockTitle: String): BlockHandler<*>? =
         when (blockTitle) {
-            "Описание:" -> ValueInfoBlockHandler()
-            "Использование:" -> ReadOnlyBlockHandler()
-            "См. также:" -> RelatedObjectsBlockHandler()
-            "Примечание:" -> NoteBlockHandler()
-            "Доступность:", "Использование в версии:" -> null
+            "Description:" -> ValueInfoBlockHandler()
+            "Usage:" -> ReadOnlyBlockHandler()
+            "See also:" -> RelatedObjectsBlockHandler()
+            "Note:" -> NoteBlockHandler()
+            "Availability:", "Available since:" -> null
             else -> throw UnknownPageBlockType(blockTitle)
         }
 

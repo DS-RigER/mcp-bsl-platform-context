@@ -24,7 +24,7 @@ private val log = KotlinLogging.logger { }
 
 class PlatformContextLoader {
     companion object {
-        private const val CONTEXT_FILE_NAME = "shcntx_ru.hbk"
+        private const val CONTEXT_FILE_NAME = "shcntx_root.hbk"
     }
 
     /**

@@ -52,9 +52,9 @@ class EnumValuePageParseHandler : PageProxyHandler<EnumValueInfo>() {
 
     override fun createHandler(blockTitle: String): BlockHandler<*>? =
         when (blockTitle) {
-            "Описание:" -> DescriptionBlockHandler()
-            "См. также:" -> RelatedObjectsBlockHandler()
-            "Доступность:", "Использование в версии:" -> null
+            "Description:" -> DescriptionBlockHandler()
+            "See also:" -> RelatedObjectsBlockHandler()
+            "Availability:", "Available since:" -> null
             else -> throw UnknownPageBlockType(blockTitle)
         }
 
