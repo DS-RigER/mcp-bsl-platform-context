@@ -43,17 +43,19 @@ class DocsInfoService(
     fun init() {
         logger.info { "Initializing DocsInfoService..." }
 
-        strictTypesContent = loadDocumentationFile(
-            externalPath = strictTypesPath,
-            classpathResource = "/docinfo/strict-types.md",
-            description = "strict-types",
-        )
+        strictTypesContent =
+            loadDocumentationFile(
+                externalPath = strictTypesPath,
+                classpathResource = "/docinfo/strict-types.md",
+                description = "strict-types",
+            )
 
-        guidelineContent = loadDocumentationFile(
-            externalPath = guidelinePath,
-            classpathResource = "/docinfo/guideline.md",
-            description = "guideline",
-        )
+        guidelineContent =
+            loadDocumentationFile(
+                externalPath = guidelinePath,
+                classpathResource = "/docinfo/guideline.md",
+                description = "guideline",
+            )
 
         topicSections = parseTopicSections(strictTypesContent)
 
@@ -86,7 +88,8 @@ class DocsInfoService(
 
         // Fall back to classpath resource
         logger.info { "Loading $description from classpath: $classpathResource" }
-        return javaClass.getResourceAsStream(classpathResource)
+        return javaClass
+            .getResourceAsStream(classpathResource)
             ?.bufferedReader(Charsets.UTF_8)
             ?.use { it.readText() }
             ?: throw IllegalStateException("Embedded resource not found: $classpathResource")

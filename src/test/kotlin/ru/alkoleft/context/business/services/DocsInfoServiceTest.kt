@@ -22,10 +22,11 @@ class DocsInfoServiceTest {
     @BeforeEach
     fun setUp() {
         // Use empty paths to fall back to classpath resources
-        service = DocsInfoService(
-            strictTypesPath = "",
-            guidelinePath = "",
-        )
+        service =
+            DocsInfoService(
+                strictTypesPath = "",
+                guidelinePath = "",
+            )
         service.init()
     }
 

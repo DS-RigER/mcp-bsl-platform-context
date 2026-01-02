@@ -163,10 +163,11 @@ Use `getCheckInfo(code)` to get detailed information about a specific check."""
         }
 
         // Group checks by prefix for better organization
-        val grouped = availableChecks.groupBy { check ->
-            val parts = check.split("-")
-            if (parts.size > 1) parts[0] else "other"
-        }
+        val grouped =
+            availableChecks.groupBy { check ->
+                val parts = check.split("-")
+                if (parts.size > 1) parts[0] else "other"
+            }
 
         val result = StringBuilder()
         result.appendLine("# Available BSL Checks")
@@ -175,7 +176,7 @@ Use `getCheckInfo(code)` to get detailed information about a specific check."""
         result.appendLine()
 
         grouped.toSortedMap().forEach { (prefix, checks) ->
-            result.appendLine("## ${prefix.replaceFirstChar { it.uppercase() }}")
+            result.appendLine("## ${prefix.replaceFirstChar { char -> char.uppercase() }}")
             checks.forEach { check ->
                 result.appendLine("- `$check`")
             }
@@ -190,19 +191,24 @@ Use `getCheckInfo(code)` to get detailed information about a specific check."""
     /**
      * Find checks similar to the given query using simple fuzzy matching.
      */
-    private fun findSimilarChecks(query: String, limit: Int): List<String> {
-        return availableChecks
+    private fun findSimilarChecks(
+        query: String,
+        limit: Int,
+    ): List<String> =
+        availableChecks
             .map { check -> check to calculateSimilarity(query, check) }
             .filter { it.second > 0.3 }
             .sortedByDescending { it.second }
             .take(limit)
             .map { it.first }
-    }
 
     /**
      * Calculate similarity between two strings (simple algorithm).
      */
-    private fun calculateSimilarity(s1: String, s2: String): Double {
+    private fun calculateSimilarity(
+        s1: String,
+        s2: String,
+    ): Double {
         // Check if s1 is substring of s2
         if (s2.contains(s1)) return 1.0
 
