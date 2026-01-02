@@ -12,11 +12,24 @@ import kotlinx.cli.ArgType
 import kotlinx.cli.default
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
+import ru.alkoleft.context.infrastructure.export.PlatformContextExporter
+import java.nio.file.Paths
 
 @SpringBootApplication
 class McpServerApplication
 
 fun main(args: Array<String>) {
+    System.err.println("MCP BSL Context starting...")
+    try {
+        runMainLogic(args)
+    } catch (e: Exception) {
+        System.err.println("FATAL ERROR: ${e.message}")
+        e.printStackTrace(System.err)
+        System.exit(1)
+    }
+}
+
+private fun runMainLogic(args: Array<String>) {
     val parser = ArgParser("mcp-bsl-context")
 
     val platformPath by parser.option(
@@ -33,27 +46,52 @@ fun main(args: Array<String>) {
     )
     val mode by parser
         .option(
-            ArgType.Choice(listOf("sse", "stdio"), { it }),
+            ArgType.Choice(listOf("sse", "stdio", "convert"), { it }),
             shortName = "m",
             fullName = "mode",
-            description = "Режим работы: sse (HTTP Server-Sent Events) или stdio (стандартный ввод/вывод)",
+            description = "Режим работы: sse, stdio или convert (конвертация HBK → JSON)",
         ).default("stdio")
     val ssePort by parser.option(
         ArgType.Int,
         fullName = "port",
         description = "Порт для SSE сервера (по умолчанию 8080)",
     )
+    val outputPath by parser.option(
+        ArgType.String,
+        shortName = "o",
+        fullName = "output",
+        description = "Путь для сохранения результата конвертации (для режима convert)",
+    )
+    val platformVersion by parser.option(
+        ArgType.String,
+        fullName = "version",
+        description = "Версия платформы для метаданных (для режима convert)",
+    )
+    val jsonPath by parser.option(
+        ArgType.String,
+        shortName = "j",
+        fullName = "json-path",
+        description = "Путь к JSON файлу контекста (вместо HBK)",
+    )
 
     parser.parse(args)
 
-    // Настройка пути к платформе
-    if (!platformPath.isNullOrBlank()) {
-        System.setProperty("platform.context.path", platformPath as String)
+    // Настройка логирования
+    if (verbose == true) {
+        System.setProperty("logging.level.root", "DEBUG")
     }
 
-    // Настройка логирования
-    if (verbose ?: false) {
-        System.setProperty("logging.level.root", "DEBUG")
+    // Режим конвертации - не запускаем Spring, просто конвертируем
+    if (mode == "convert") {
+        runConvertMode(platformPath, outputPath, platformVersion)
+        return
+    }
+
+    // Настройка пути к платформе (HBK) или JSON
+    if (!jsonPath.isNullOrBlank()) {
+        System.setProperty("platform.context.json-path", jsonPath as String)
+    } else if (!platformPath.isNullOrBlank()) {
+        System.setProperty("platform.context.path", platformPath as String)
     }
 
     // Настройка режима работы
@@ -76,7 +114,41 @@ fun main(args: Array<String>) {
         System.setProperty("file.encoding", "UTF-8")
     }
 
-    runApplication<McpServerApplication>(*args) {
+    // Не передаём CLI аргументы Spring - они уже обработаны
+    runApplication<McpServerApplication> {
         setDefaultProperties(mapOf("spring.profiles.active" to activeProfiles.joinToString(",")))
+    }
+}
+
+/**
+ * Запускает режим конвертации HBK → JSON.
+ */
+private fun runConvertMode(
+    platformPath: String?,
+    outputPath: String?,
+    platformVersion: String?,
+) {
+    if (platformPath.isNullOrBlank()) {
+        System.err.println("Ошибка: для режима convert необходим параметр --platform-path")
+        System.exit(1)
+    }
+    if (outputPath.isNullOrBlank()) {
+        System.err.println("Ошибка: для режима convert необходим параметр --output")
+        System.exit(1)
+    }
+
+    try {
+        val exporter = PlatformContextExporter()
+        exporter.export(
+            platformPath = Paths.get(platformPath),
+            outputPath = Paths.get(outputPath),
+            version = platformVersion ?: "unknown",
+        )
+        println("Конвертация завершена успешно!")
+        println("Результат: $outputPath/platform-context.json")
+    } catch (e: Exception) {
+        System.err.println("Ошибка при конвертации: ${e.message}")
+        e.printStackTrace()
+        System.exit(1)
     }
 }
