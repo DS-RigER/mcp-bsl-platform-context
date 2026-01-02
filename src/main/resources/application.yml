@@ -47,6 +47,11 @@ docs:
     # Путь к файлу strict-types.md
     # Пример: /path/to/strict-types.md или C:\docs\strict-types.md
     path: ${DOCS_STRICT_TYPES_PATH:}
+  checks:
+    # Путь к каталогу с описаниями проверок (*.md файлы с кодом проверки в имени)
+    # Пример: /path/to/checks или C:\docs\checks
+    # Каждый файл должен называться по коду проверки: begin-transaction.md, query-in-loop-check.md
+    path: ${DOCS_CHECKS_PATH:}
 
 # Настройки логирования
 logging:

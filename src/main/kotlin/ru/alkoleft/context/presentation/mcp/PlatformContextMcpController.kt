@@ -11,6 +11,7 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.ai.tool.annotation.Tool
 import org.springframework.ai.tool.annotation.ToolParam
 import org.springframework.stereotype.Service
+import ru.alkoleft.context.business.services.ChecksInfoService
 import ru.alkoleft.context.business.services.ContextSearchService
 import ru.alkoleft.context.business.services.DocsInfoService
 import ru.alkoleft.context.business.services.ResponseFormatterService
@@ -27,6 +28,7 @@ class PlatformContextMcpController(
     private val searchService: ContextSearchService,
     private val formatter: ResponseFormatterService,
     private val docsInfoService: DocsInfoService,
+    private val checksInfoService: ChecksInfoService,
 ) {
     /**
      * Поиск по API платформы 1С Предприятие
@@ -243,5 +245,61 @@ class PlatformContextMcpController(
     ): String {
         logger.debug { "searchStrictTyping called with query='$query'" }
         return docsInfoService.searchStrictTyping(query)
+    }
+
+    /**
+     * Get BSL check description by check code
+     */
+    @Tool(
+        name = "getCheckInfo",
+        description =
+            "Get detailed description of a BSL code check by its code. " +
+                "Returns full documentation including error messages, examples of compliant and non-compliant code, " +
+                "and how to fix the issue. Use this when you encounter a check warning or error in 1C:Enterprise code.",
+    )
+    fun getCheckInfo(
+        @ToolParam(
+            description =
+                "Check code (identifier). Examples: 'begin-transaction', 'empty-except-statement', " +
+                    "'query-in-loop-check', 'module-unused-method-check'. " +
+                    "Use 'listChecks' to see all available checks.",
+        )
+        code: String,
+    ): String {
+        logger.debug { "getCheckInfo called with code='$code'" }
+        return checksInfoService.getCheckInfo(code)
+    }
+
+    /**
+     * Search BSL checks by keyword
+     */
+    @Tool(
+        name = "searchChecks",
+        description =
+            "Search available BSL code checks by keyword. " +
+                "Use this to find checks related to specific topics like 'transaction', 'query', 'module', 'exception', etc.",
+    )
+    fun searchChecks(
+        @ToolParam(
+            description = "Search query. Examples: 'transaction', 'query', 'module', 'exception', 'variable'",
+        )
+        query: String,
+    ): String {
+        logger.debug { "searchChecks called with query='$query'" }
+        return checksInfoService.searchChecks(query)
+    }
+
+    /**
+     * List all available BSL checks
+     */
+    @Tool(
+        name = "listChecks",
+        description =
+            "Get list of all available BSL code checks. " +
+                "Returns grouped list of check codes that can be used with getCheckInfo.",
+    )
+    fun listChecks(): String {
+        logger.debug { "listChecks called" }
+        return checksInfoService.listChecks()
     }
 }

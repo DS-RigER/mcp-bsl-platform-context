@@ -16,6 +16,7 @@
 - **Информация о конструкторах** — способы создания объектов платформы 1С
 - **BSL Coding Guidelines** — руководство по написанию кода на языке 1С
 - **Strict Typing Documentation** — документация по строгой типизации кода
+- **BSL Check Descriptions** — описания проверок кода с примерами правильного и неправильного кода
 - **Интеграция с AI** — стандартизированный протокол MCP для взаимодействия с AI-ассистентами
 - **Два режима работы** — STDIO для локальной разработки и SSE для сетевого доступа
 
@@ -88,6 +89,7 @@ java -Dfile.encoding=UTF-8 -jar mcp-bsl-context-<версия>.jar [опции]
 			"-Dfile.encoding=UTF-8",
 			"-Ddocs.guideline.path=C:\\mcp-bsl-platform-context\\src\\main\\resources\\docinfo\\guideline.md",
 			"-Ddocs.strict-types.path=C:\\mcp-bsl-platform-context\\src\\main\\resources\\docinfo\\strict-types.md",
+			"-Ddocs.checks.path=C:\\mcp-bsl-platform-context\\docinfo\\checks",
 			"-jar",
 			"C:\\mcp-bsl-platform-context\\build\\libs\\mcp-bsl-context-only_en-4cba552-DIRTY.jar",
 			"--platform-path",
@@ -145,14 +147,18 @@ java -Dfile.encoding=UTF-8 -jar mcp-bsl-context-0.3.0.jar --platform-path "C:\Pr
 - **getCodingGuideline** - получение BSL Coding Guidelines (руководство по написанию кода)
 - **getStrictTypingInfo** - получение информации по строгой типизации по топикам
 - **searchStrictTyping** - поиск по документации строгой типизации
+- **getCheckInfo** - получение описания проверки кода по её коду (например, `begin-transaction`, `query-in-loop-check`)
+- **searchChecks** - поиск проверок кода по ключевому слову
+- **listChecks** - получение списка всех доступных проверок кода
 
 ### Внешние файлы документации
 
-Файлы `guideline.md` и `strict-types.md` можно указать через параметры JVM для кастомизации без пересборки JAR:
+Файлы `guideline.md`, `strict-types.md` и каталог с описаниями проверок можно указать через параметры JVM для кастомизации без пересборки JAR:
 
 ```bash
 java -Ddocs.guideline.path=/path/to/guideline.md \
      -Ddocs.strict-types.path=/path/to/strict-types.md \
+     -Ddocs.checks.path=/path/to/checks \
      -jar mcp-bsl-context.jar --platform-path "/opt/1cv8"
 ```
 
@@ -160,9 +166,12 @@ java -Ddocs.guideline.path=/path/to/guideline.md \
 ```bash
 export DOCS_GUIDELINE_PATH=/path/to/guideline.md
 export DOCS_STRICT_TYPES_PATH=/path/to/strict-types.md
+export DOCS_CHECKS_PATH=/path/to/checks
 ```
 
-Если пути не указаны, используются встроенные ресурсы из JAR.
+Каталог с проверками должен содержать `.md` файлы с именами по коду проверки (например, `begin-transaction.md`, `query-in-loop-check.md`).
+
+Если пути не указаны, используются встроенные ресурсы из JAR (для guideline и strict-types). Для checks путь должен быть указан явно.
 
 Подробная документация по использованию MCP сервера доступна в [MCP_SERVER_USAGE.md](documentation/README.md).
 
@@ -198,6 +207,7 @@ export DOCS_STRICT_TYPES_PATH=/path/to/strict-types.md
         "-Dfile.encoding=UTF-8",
         "-Ddocs.guideline.path=C:\\path\\to\\guideline.md",
         "-Ddocs.strict-types.path=C:\\path\\to\\strict-types.md",
+        "-Ddocs.checks.path=C:\\path\\to\\checks",
         "-jar",
         "C:\\your_path\\mcp-bsl-context-0.3.0.jar",
         "--platform-path",
@@ -237,6 +247,7 @@ export DOCS_STRICT_TYPES_PATH=/path/to/strict-types.md
         "-Dfile.encoding=UTF-8",
         "-Ddocs.guideline.path=C:\\path\\to\\guideline.md",
         "-Ddocs.strict-types.path=C:\\path\\to\\strict-types.md",
+        "-Ddocs.checks.path=C:\\path\\to\\checks",
         "-jar",
         "C:\\your_path\\mcp-bsl-context-0.3.0.jar",
         "--platform-path",
