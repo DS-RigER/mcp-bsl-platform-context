@@ -59,7 +59,7 @@ class EnumPageParseHandler : PageProxyHandler<EnumInfo>() {
             "Description:" -> DescriptionBlockHandler()
             "See also:" -> RelatedObjectsBlockHandler()
             "Example:" -> ExampleBlockHandler() // Placeholder, can be a specific handler
-            "Values", "Availability:", "Available since:", "Properties:" -> null
+            "Values", "Availability:", "Available since:", "Properties:", "Use in the interface:" -> null
             else -> throw UnknownPageBlockType(blockTitle)
         }
 

@@ -54,7 +54,7 @@ class EnumValuePageParseHandler : PageProxyHandler<EnumValueInfo>() {
         when (blockTitle) {
             "Description:" -> DescriptionBlockHandler()
             "See also:" -> RelatedObjectsBlockHandler()
-            "Availability:", "Available since:" -> null
+            "Availability:", "Available since:", "Use in the interface:" -> null
             else -> throw UnknownPageBlockType(blockTitle)
         }
 

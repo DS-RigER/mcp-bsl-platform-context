@@ -58,7 +58,7 @@ class ConstructorPageProxyHandler : PageProxyHandler<ConstructorInfo>() {
             "Example:" -> ExampleBlockHandler()
             "See also:" -> RelatedObjectsBlockHandler()
             "Note:" -> NoteBlockHandler()
-            "Availability:", "Available since:" -> null
+            "Availability:", "Available since:", "Use in the interface:" -> null
             else -> throw UnknownPageBlockType(blockTitle)
         }
 

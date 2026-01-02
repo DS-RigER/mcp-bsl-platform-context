@@ -78,7 +78,7 @@ class MethodPageProxyHandler : PageProxyHandler<MethodInfo>() {
                 "Example:" -> ExampleBlockHandler() // Placeholder, can be a specific handler
                 "See also:" -> RelatedObjectsBlockHandler() // Placeholder, can be a specific handler
                 "Note:" -> NoteBlockHandler()
-                "Availability:", "Available since:" -> null
+                "Availability:", "Available since:", "Use in the interface:" -> null
                 else -> throw UnknownPageBlockType(blockTitle)
             }
         }

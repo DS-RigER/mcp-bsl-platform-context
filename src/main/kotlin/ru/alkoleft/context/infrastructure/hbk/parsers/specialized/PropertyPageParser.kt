@@ -58,7 +58,7 @@ class PropertyPageProxyHandler : PageProxyHandler<PropertyInfo>() {
             "Usage:" -> ReadOnlyBlockHandler()
             "See also:" -> RelatedObjectsBlockHandler()
             "Note:" -> NoteBlockHandler()
-            "Availability:", "Available since:" -> null
+            "Availability:", "Available since:", "Use in the interface:" -> null
             else -> throw UnknownPageBlockType(blockTitle)
         }
 
